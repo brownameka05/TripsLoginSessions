@@ -1,0 +1,39 @@
+<html>
+<body>
+
+  <h1>Welcome </h1>
+
+  Hello, {{username}}
+
+  <h1>Your Trips</h1>
+
+  <form action="/add-trip" method="POST">
+
+    <input type="text" placeholder="Destination" name="destination"/>
+    <input type="text" placeholder="Departure Date" name="departure"/>
+    <input type="text" placeholder="Return Date" name="return"/>
+    <input type="text" name="tripURL" placeholder="tripURL">
+    <input type="submit" value="add"/>
+
+  </form>
+
+<ul>
+  {{#trips}}
+    <li>
+      {{tripDestination}}
+    </li>
+
+    <!-- <img src = {{tripURL}}>
+    <li> {{tripDestination}}
+    <br> Departur Date: {{departureDate}}
+    <br> Return Date:{{returnDate}} -->
+
+
+
+  {{/trips}}
+</ul>
+
+
+
+</body>
+</html>
