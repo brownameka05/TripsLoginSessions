@@ -5,7 +5,10 @@ var bodyParser = require('body-parser')
 var session = require('express-session')
 const app = express()
 
+
 let trips = []
+// let destination =[]
+
 
 let username = [
   {username : "AmekaBrown", password : "password"}
@@ -21,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.engine('mustache',mustacheExpress())
 app.set('views','./views')
 app.set('view engine','mustache')
+
+app.use(express.static('css'))
 
 
 function log(req,res,next){
@@ -39,7 +44,7 @@ let authenticateLogin = function(req,res,next){
   }
 
 
-app.all("/admin/*",authenticateLogin, function (req,res,next){
+app.all("/user/*",authenticateLogin, function (req,res,next){
   next()
 })
 
@@ -55,15 +60,10 @@ app.post("/add-trip", function(req, res){
   let tripURL = req.body.tripURL
 
   console.log(tripDestination)
-  trips.push({tripDestination: tripDestination})
-  res.redirect("admin/trips")
+  trips.push({tripDestination: tripDestination, departureDate : departureDate,returnDate : returnDate,tripURL : tripURL})
+  res.render("dashboard",{trips : trips})
 
 })
-
-app.get("/add-trip", function(req,res){
-  res.json(tripDestination)
-})
-
 
 
 app.get("/", function (req,res){
@@ -78,22 +78,35 @@ app.post("/login",function (req,res){
   if(username == "AmekaBrown" && password == "password"){
     if(req.session) {
       req.session.username = username
-      res.redirect("admin/trips")
+      res.render("dashboard",{trips:trips})
     }
   }
 
+})
 
+app.post("/signout", function(req,res){
+  res.render("login")
 })
 
 
-
-app.get("/admin/trips", function(req,res){
+app.get("/add-trip", function(req,res){
   if (req.session.username){
     res.render("dashboard")
   }
 
+})
+
+app.post("/remove-trip", function(req,res){
+  let destination = req.body.tripName
+  console.log(destination)
+
+  trips = trips.filter(function(trip){
+    return trip.destination != destination
+  })
+  res.redirect("add-trip")
 
 })
+
 
  app.get("/login", function (req,res){
    res.render("login")
